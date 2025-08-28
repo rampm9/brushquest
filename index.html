@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrushQuest 🪥✨</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 { margin-bottom: 10px; }
+    .timer { font-size: 2em; margin: 20px 0; }
+    .progress {
+      width: 100%;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 20px auto;
+      max-width: 400px;
+      height: 20px;
+    }
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      width: 0%;
+      transition: width 1s linear;
+    }
+    button {
+      background: #4caf50;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #43a047; }
+    .stickers { margin: 20px; font-size: 2em; }
+    .streak { font-weight: bold; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>🪥 BrushQuest</h1>
+  <p>Gamify brushing your teeth: 2-minute timer, stickers & streaks.</p>
+  
+  <div class="timer" id="timer">02:00</div>
+  <div class="progress"><div class="bar" id="progressBar"></div></div>
+  
+  <button id="startBtn">Start Brushing</button>
+  <button id="doneBtn" disabled>Done!</button>
+  
+  <div class="stickers" id="stickers">⭐</div>
+  <div class="streak">Streak: <span id="streakCount">0</span> days</div>
+  
+  <script>
+    let timerInterval, totalTime = 120, timeLeft = totalTime;
+    const timerEl = document.getElementById("timer");
+    const bar = document.getElementById("progressBar");
+    const stickersEl = document.getElementById("stickers");
+    const streakEl = document.getElementById("streakCount");
+    const startBtn = document.getElementById("startBtn");
+    const doneBtn = document.getElementById("doneBtn");
+    
+    let streak = localStorage.getItem("brushStreak") || 0;
+    streakEl.textContent = streak;
+    
+    function updateTimer() {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      timerEl.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+      bar.style.width = `${((totalTime - timeLeft) / totalTime) * 100}%`;
+    }
+    
+    function startTimer() {
+      startBtn.disabled = true;
+      doneBtn.disabled = true;
+      timeLeft = totalTime;
+      updateTimer();
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerEl.textContent = "Done! 🎉";
+          doneBtn.disabled = false;
+          stickersEl.textContent = "🌟✨🦷";
+        }
+      }, 1000);
+    }
+    
+    function completeBrushing() {
+      let today = new Date().toDateString();
+      if (localStorage.getItem("lastBrush") !== today) {
+        streak++;
+        localStorage.setItem("brushStreak", streak);
+        localStorage.setItem("lastBrush", today);
+      }
+      streakEl.textContent = streak;
+      alert("Great job! Streak updated.");
+      startBtn.disabled = false;
+      doneBtn.disabled = true;
+    }
+    
+    startBtn.addEventListener("click", startTimer);
+    doneBtn.addEventListener("click", completeBrushing);
+  </script>
+</body>
+</html>
