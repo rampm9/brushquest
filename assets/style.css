@@ -1,101 +1,290 @@
-:root{
-    --bg1:#7c3aed; --bg2:#06b6d4;
-    --card:#fff; --ink:#101828; --muted:#667085;
-    --brand:#22c55e; --brand2:#16a34a;
-    --warn:#f59e0b; --soft:#f4f8ff;
-    --tooth:#ffd7e2; --tooth-face:#5b5b5b;
-    --progress:#e9eef6;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Kufi Arabic", "Noto Sans Arabic", sans-serif;
-    background:
-      radial-gradient(1000px 800px at 15% -10%, #60a5fa55 0%, transparent 50%),
-      radial-gradient(900px 700px at 100% 0%, #34d39955 0%, transparent 50%),
-      linear-gradient(135deg, var(--bg1), var(--bg2));
-    display:grid; place-items:center; padding:16px; color:var(--ink);
-  }
-  .app{
-    width:100%; max-width:560px; background:var(--card); border-radius:28px;
-    box-shadow:0 20px 60px rgba(0,0,0,.22);
-    padding:18px 16px 20px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.app {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Language Toggle */
+.top {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.lang {
+  background: #f1f5f9;
+  border-radius: 25px;
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+.pill {
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.pill.active {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Title */
+.title {
+  margin-bottom: 20px;
+}
+
+.title h1 {
+  font-size: 24px;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.sub {
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Timer */
+.timer {
+  font-size: 64px;
+  font-weight: 900;
+  color: #1e293b;
+  margin: 20px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Teeth Progress */
+.teeth {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.tooth {
+  background: #fef3c7;
+  border-radius: 12px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #92400e;
+  transition: all 0.3s ease;
+}
+
+.tooth.done {
+  background: #86efac;
+  color: #166534;
+  transform: scale(1.1);
+}
+
+/* Progress Bar */
+.bar-outer {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.bar-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  transition: width 0.5s ease;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 100px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.b-go {
+  background: #10b981;
+  color: white;
+}
+
+.b-go:hover {
+  background: #059669;
+}
+
+.b-warn {
+  background: #f59e0b;
+  color: white;
+}
+
+.b-warn:hover {
+  background: #d97706;
+}
+
+.b-soft {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.b-soft:hover {
+  background: #c7d2fe;
+}
+
+.b-done {
+  background: #86efac;
+  color: #166534;
+}
+
+.b-done:hover {
+  background: #4ade80;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Messages */
+.msg {
+  color: #059669;
+  font-weight: 600;
+  margin: 16px 0;
+  min-height: 24px;
+}
+
+.stickers {
+  font-size: 24px;
+  margin: 16px 0;
+  min-height: 32px;
+}
+
+.streak {
+  color: #64748b;
+  font-weight: 600;
+  margin: 16px 0;
+}
+
+/* Tips */
+.tips {
+  margin-top: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tips summary {
+  padding: 16px;
+  background: #f8fafc;
+  cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  list-style: none;
+}
+
+.tips summary::-webkit-details-marker {
+  display: none;
+}
+
+.tips ul {
+  padding: 16px 24px;
+  background: white;
+  text-align: left;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.tips li {
+  margin: 8px 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  body {
+    padding: 16px;
   }
   
-  /* header */
-  .top{
-    display:flex; gap:8px; justify-content:space-between; align-items:center;
-    margin-bottom:6px;
-  }
-  .lang{
-    display:flex; gap:6px; background:#f1f5f9; border-radius:999px; padding:4px;
-  }
-  .pill{
-    border:0; background:transparent; padding:6px 10px; border-radius:999px; cursor:pointer;
-    font-weight:800; color:#334155; font-size:14px;
-  }
-  .pill.active{ background:#e0e7ff; color:#3730a3 }
-  
-  .title{
-    display:flex; gap:8px; align-items:center; justify-content:center; width:100%;
-  }
-  .title h1{ font-size:20px; margin:0; font-weight:900 }
-  .sub{ text-align:center; color:var(--muted); margin:4px 0 10px; font-size:14px }
-  
-  /* timer */
-  .timer{
-    text-align:center; font-variant-numeric:tabular-nums; letter-spacing:1px;
-    font-weight:900; font-size:64px; margin-top:2px; margin-bottom:10px; color:#0f172a;
+  .app {
+    padding: 24px 20px;
+    border-radius: 16px;
   }
   
-  /* segmented progress (teeth) */
-  .teeth{
-    display:grid; grid-template-columns: repeat(8,1fr); gap:8px;
-    max-width:480px; margin:10px auto 12px;
+  .timer {
+    font-size: 56px;
   }
-  .tooth{
-    background:var(--tooth); border-radius:14px; height:30px; position:relative;
-    box-shadow: inset 0 -6px 0 #ffc2d6, 0 2px 0 rgba(0,0,0,.06);
-    display:grid; place-items:center; font-size:18px; color:var(--tooth-face);
-    opacity:.65; transition: transform .12s ease, opacity .2s ease, filter .2s ease;
+  
+  .title h1 {
+    font-size: 22px;
   }
-  .tooth.done{ opacity:1; transform:translateY(-2px); filter:brightness(1.06) }
   
-  /* progress bar (for accessibility) */
-  .bar-outer{ height:12px; background:var(--progress); border-radius:999px; overflow:hidden; max-width:520px; margin:0 auto 8px }
-  .bar-inner{ height:100%; width:0%; background:linear-gradient(90deg, var(--brand), var(--brand2)); transition:width .5s ease }
-  
-  /* buttons */
-  .buttons{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:8px 0 4px }
-  button{
-    border:0; border-radius:16px; padding:14px 18px; font-weight:900; cursor:pointer; font-size:16px;
-    min-width:110px; box-shadow:0 8px 20px rgba(0,0,0,.10); transition:transform .06s ease, opacity .15s ease;
+  .buttons button {
+    min-width: calc(50% - 6px);
+    padding: 12px 16px;
+    font-size: 15px;
   }
-  button:active{ transform:translateY(1px) }
-  .b-go{ background: linear-gradient(180deg, var(--brand), var(--brand2)); color:white }
-  .b-warn{ background:#fff3cd; color:#854d0e }
-  .b-soft{ background:#eef2ff; color:#3730a3 }
-  .b-done{ background:#dcfce7; color:#14532d }
-  .disabled{ opacity:.45; pointer-events:none }
   
-  /* feedback */
-  .stickers{ text-align:center; font-size:28px; min-height:34px; margin:6px 0 }
-  .streak{ text-align:center; font-weight:900; margin:2px 0 10px }
-  .msg{ text-align:center; font-weight:800; color:#0a7a37; min-height:22px }
-  
-  /* tips */
-  details.tips{ margin-top:8px; border:1px solid #e5e7eb; border-radius:18px; overflow:hidden }
-  details.tips summary{
-    padding:12px 14px; list-style:none; cursor:pointer; background:#f8fafc; font-weight:900; display:flex; gap:8px; align-items:center
+  .teeth {
+    gap: 6px;
   }
-  details.tips summary::-webkit-details-marker{ display:none }
-  details.tips ul{ margin:0; padding:10px 22px 14px 28px; color:#475569; line-height:1.5 }
-  details.tips li{ margin:6px 0 }
   
-  /* responsive */
-  @media (max-width:420px){
-    .timer{ font-size:56px }
-    .tooth{ height:28px; border-radius:12px }
-    .buttons button{ min-width:46%; padding:14px 12px }
+  .tooth {
+    height: 28px;
+    font-size: 14px;
   }
+}
+
+@media (max-width: 360px) {
+  .buttons button {
+    min-width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .timer {
+    font-size: 48px;
+  }
+}
   

@@ -1,122 +1,23 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
+<meta name="theme-color" content="#7c3aed" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <title>BrushQuest • لعبة تنظيف الأسنان</title>
 <meta name="description" content="لعبة لطيفة للأطفال لعدّ دقيقتين أثناء تنظيف الأسنان مع نجوم وسِجل متتابع." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.8em%22 font-size=%2280%22>🪥</text></svg>">
-<style>
-  :root{
-    --bg1:#7c3aed; --bg2:#06b6d4;
-    --card:#fff; --ink:#101828; --muted:#667085;
-    --brand:#22c55e; --brand2:#16a34a;
-    --warn:#f59e0b; --soft:#f4f8ff;
-    --tooth:#ffd7e2; --tooth-face:#5b5b5b;
-    --progress:#e9eef6;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Kufi Arabic", "Noto Sans Arabic", sans-serif;
-    background:
-      radial-gradient(1000px 800px at 15% -10%, #60a5fa55 0%, transparent 50%),
-      radial-gradient(900px 700px at 100% 0%, #34d39955 0%, transparent 50%),
-      linear-gradient(135deg, var(--bg1), var(--bg2));
-    display:grid; place-items:center; padding:16px; color:var(--ink);
-  }
-  .app{
-    width:100%; max-width:560px; background:var(--card); border-radius:28px;
-    box-shadow:0 20px 60px rgba(0,0,0,.22);
-    padding:18px 16px 20px;
-  }
-
-  /* header */
-  .top{
-    display:flex; gap:8px; justify-content:space-between; align-items:center;
-    margin-bottom:6px;
-  }
-  .lang{
-    display:flex; gap:6px; background:#f1f5f9; border-radius:999px; padding:4px;
-  }
-  .pill{
-    border:0; background:transparent; padding:6px 10px; border-radius:999px; cursor:pointer;
-    font-weight:800; color:#334155; font-size:14px;
-  }
-  .pill.active{ background:#e0e7ff; color:#3730a3 }
-
-  .title{
-    display:flex; gap:8px; align-items:center; justify-content:center; width:100%;
-  }
-  .title h1{ font-size:20px; margin:0; font-weight:900 }
-  .sub{ text-align:center; color:var(--muted); margin:4px 0 10px; font-size:14px }
-
-  /* timer */
-  .timer{
-    text-align:center; font-variant-numeric:tabular-nums; letter-spacing:1px;
-    font-weight:900; font-size:64px; margin-top:2px; margin-bottom:10px; color:#0f172a;
-  }
-
-  /* segmented progress (teeth) */
-  .teeth{
-    display:grid; grid-template-columns: repeat(8,1fr); gap:8px;
-    max-width:480px; margin:10px auto 12px;
-  }
-  .tooth{
-    background:var(--tooth); border-radius:14px; height:30px; position:relative;
-    box-shadow: inset 0 -6px 0 #ffc2d6, 0 2px 0 rgba(0,0,0,.06);
-    display:grid; place-items:center; font-size:18px; color:var(--tooth-face);
-    opacity:.65; transition: transform .12s ease, opacity .2s ease, filter .2s ease;
-  }
-  .tooth.done{ opacity:1; transform:translateY(-2px); filter:brightness(1.06) }
-
-  /* progress bar (for accessibility) */
-  .bar-outer{ height:12px; background:var(--progress); border-radius:999px; overflow:hidden; max-width:520px; margin:0 auto 8px }
-  .bar-inner{ height:100%; width:0%; background:linear-gradient(90deg, var(--brand), var(--brand2)); transition:width .5s ease }
-
-  /* buttons */
-  .buttons{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:8px 0 4px }
-  button{
-    border:0; border-radius:16px; padding:14px 18px; font-weight:900; cursor:pointer; font-size:16px;
-    min-width:110px; box-shadow:0 8px 20px rgba(0,0,0,.10); transition:transform .06s ease, opacity .15s ease;
-  }
-  button:active{ transform:translateY(1px) }
-  .b-go{ background: linear-gradient(180deg, var(--brand), var(--brand2)); color:white }
-  .b-warn{ background:#fff3cd; color:#854d0e }
-  .b-soft{ background:#eef2ff; color:#3730a3 }
-  .b-done{ background:#dcfce7; color:#14532d }
-  .disabled{ opacity:.45; pointer-events:none }
-
-  /* feedback */
-  .stickers{ text-align:center; font-size:28px; min-height:34px; margin:6px 0 }
-  .streak{ text-align:center; font-weight:900; margin:2px 0 10px }
-  .msg{ text-align:center; font-weight:800; color:#0a7a37; min-height:22px }
-
-  /* tips */
-  details.tips{ margin-top:8px; border:1px solid #e5e7eb; border-radius:18px; overflow:hidden }
-  details.tips summary{
-    padding:12px 14px; list-style:none; cursor:pointer; background:#f8fafc; font-weight:900; display:flex; gap:8px; align-items:center
-  }
-  details.tips summary::-webkit-details-marker{ display:none }
-  details.tips ul{ margin:0; padding:10px 22px 14px 28px; color:#475569; line-height:1.5 }
-  details.tips li{ margin:6px 0 }
-
-  /* responsive */
-  @media (max-width:420px){
-    .timer{ font-size:56px }
-    .tooth{ height:28px; border-radius:12px }
-    .buttons button{ min-width:46%; padding:14px 12px }
-  }
-</style>
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <main class="app" id="app">
     <div class="top">
       <div class="lang" role="tablist">
-        <button class="pill active" id="arBtn" aria-selected="true">العربية</button>
-        <button class="pill" id="enBtn" aria-selected="false">English</button>
+        <button class="pill" id="arBtn" aria-selected="false">العربية</button>
+        <button class="pill active" id="enBtn" aria-selected="true">English</button>
       </div>
-      <div style="width:48px"></div><!-- spacer symmetrical -->
     </div>
 
     <div class="title">
@@ -185,7 +86,7 @@
     }
   };
 
-  let lang = 'ar';
+  let lang = 'en';
   const $ = s => document.querySelector(s);
   const els = {
     title: $('#t_title'), sub: $('#t_sub'),
@@ -301,7 +202,7 @@
   function stop(){ clearInterval(tick); running=false; paused=false; }
 
   // init
-  setLang('ar');
+  setLang('en');
   updateUI();
   enable({start:true,pause:false,reset:false,done:false});
 
@@ -315,5 +216,7 @@
   els.arBtn.addEventListener('click', ()=> setLang('ar'));
   els.enBtn.addEventListener('click', ()=> setLang('en'));
 </script>
+
+
 </body>
 </html>
