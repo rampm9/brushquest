@@ -1,114 +1,319 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BrushQuest 🪥✨</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f9f9f9;
-      color: #333;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 { margin-bottom: 10px; }
-    .timer { font-size: 2em; margin: 20px 0; }
-    .progress {
-      width: 100%;
-      background: #eee;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 20px auto;
-      max-width: 400px;
-      height: 20px;
-    }
-    .bar {
-      height: 100%;
-      background: linear-gradient(90deg, #4caf50, #8bc34a);
-      width: 0%;
-      transition: width 1s linear;
-    }
-    button {
-      background: #4caf50;
-      border: none;
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
-    }
-    button:hover { background: #43a047; }
-    .stickers { margin: 20px; font-size: 2em; }
-    .streak { font-weight: bold; margin: 10px 0; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>BrushQuest • لعبة تنظيف الأسنان</title>
+<meta name="description" content="لعبة لطيفة للأطفال لعدّ دقيقتين أثناء تنظيف الأسنان مع نجوم وسِجل متتابع." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.8em%22 font-size=%2280%22>🪥</text></svg>">
+<style>
+  :root{
+    --bg1:#7c3aed; --bg2:#06b6d4;
+    --card:#fff; --ink:#101828; --muted:#667085;
+    --brand:#22c55e; --brand2:#16a34a;
+    --warn:#f59e0b; --soft:#f4f8ff;
+    --tooth:#ffd7e2; --tooth-face:#5b5b5b;
+    --progress:#e9eef6;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Kufi Arabic", "Noto Sans Arabic", sans-serif;
+    background:
+      radial-gradient(1000px 800px at 15% -10%, #60a5fa55 0%, transparent 50%),
+      radial-gradient(900px 700px at 100% 0%, #34d39955 0%, transparent 50%),
+      linear-gradient(135deg, var(--bg1), var(--bg2));
+    display:grid; place-items:center; padding:16px; color:var(--ink);
+  }
+  .app{
+    width:100%; max-width:560px; background:var(--card); border-radius:28px;
+    box-shadow:0 20px 60px rgba(0,0,0,.22);
+    padding:18px 16px 20px;
+  }
+
+  /* header */
+  .top{
+    display:flex; gap:8px; justify-content:space-between; align-items:center;
+    margin-bottom:6px;
+  }
+  .lang{
+    display:flex; gap:6px; background:#f1f5f9; border-radius:999px; padding:4px;
+  }
+  .pill{
+    border:0; background:transparent; padding:6px 10px; border-radius:999px; cursor:pointer;
+    font-weight:800; color:#334155; font-size:14px;
+  }
+  .pill.active{ background:#e0e7ff; color:#3730a3 }
+
+  .title{
+    display:flex; gap:8px; align-items:center; justify-content:center; width:100%;
+  }
+  .title h1{ font-size:20px; margin:0; font-weight:900 }
+  .sub{ text-align:center; color:var(--muted); margin:4px 0 10px; font-size:14px }
+
+  /* timer */
+  .timer{
+    text-align:center; font-variant-numeric:tabular-nums; letter-spacing:1px;
+    font-weight:900; font-size:64px; margin-top:2px; margin-bottom:10px; color:#0f172a;
+  }
+
+  /* segmented progress (teeth) */
+  .teeth{
+    display:grid; grid-template-columns: repeat(8,1fr); gap:8px;
+    max-width:480px; margin:10px auto 12px;
+  }
+  .tooth{
+    background:var(--tooth); border-radius:14px; height:30px; position:relative;
+    box-shadow: inset 0 -6px 0 #ffc2d6, 0 2px 0 rgba(0,0,0,.06);
+    display:grid; place-items:center; font-size:18px; color:var(--tooth-face);
+    opacity:.65; transition: transform .12s ease, opacity .2s ease, filter .2s ease;
+  }
+  .tooth.done{ opacity:1; transform:translateY(-2px); filter:brightness(1.06) }
+
+  /* progress bar (for accessibility) */
+  .bar-outer{ height:12px; background:var(--progress); border-radius:999px; overflow:hidden; max-width:520px; margin:0 auto 8px }
+  .bar-inner{ height:100%; width:0%; background:linear-gradient(90deg, var(--brand), var(--brand2)); transition:width .5s ease }
+
+  /* buttons */
+  .buttons{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:8px 0 4px }
+  button{
+    border:0; border-radius:16px; padding:14px 18px; font-weight:900; cursor:pointer; font-size:16px;
+    min-width:110px; box-shadow:0 8px 20px rgba(0,0,0,.10); transition:transform .06s ease, opacity .15s ease;
+  }
+  button:active{ transform:translateY(1px) }
+  .b-go{ background: linear-gradient(180deg, var(--brand), var(--brand2)); color:white }
+  .b-warn{ background:#fff3cd; color:#854d0e }
+  .b-soft{ background:#eef2ff; color:#3730a3 }
+  .b-done{ background:#dcfce7; color:#14532d }
+  .disabled{ opacity:.45; pointer-events:none }
+
+  /* feedback */
+  .stickers{ text-align:center; font-size:28px; min-height:34px; margin:6px 0 }
+  .streak{ text-align:center; font-weight:900; margin:2px 0 10px }
+  .msg{ text-align:center; font-weight:800; color:#0a7a37; min-height:22px }
+
+  /* tips */
+  details.tips{ margin-top:8px; border:1px solid #e5e7eb; border-radius:18px; overflow:hidden }
+  details.tips summary{
+    padding:12px 14px; list-style:none; cursor:pointer; background:#f8fafc; font-weight:900; display:flex; gap:8px; align-items:center
+  }
+  details.tips summary::-webkit-details-marker{ display:none }
+  details.tips ul{ margin:0; padding:10px 22px 14px 28px; color:#475569; line-height:1.5 }
+  details.tips li{ margin:6px 0 }
+
+  /* responsive */
+  @media (max-width:420px){
+    .timer{ font-size:56px }
+    .tooth{ height:28px; border-radius:12px }
+    .buttons button{ min-width:46%; padding:14px 12px }
+  }
+</style>
 </head>
 <body>
-  <h1>🪥 BrushQuest</h1>
-  <p>Gamify brushing your teeth: 2-minute timer, stickers & streaks.</p>
-  
-  <div class="timer" id="timer">02:00</div>
-  <div class="progress"><div class="bar" id="progressBar"></div></div>
-  
-  <button id="startBtn">Start Brushing</button>
-  <button id="doneBtn" disabled>Done!</button>
-  
-  <div class="stickers" id="stickers">⭐</div>
-  <div class="streak">Streak: <span id="streakCount">0</span> days</div>
-  
-  <script>
-    let timerInterval, totalTime = 120, timeLeft = totalTime;
-    const timerEl = document.getElementById("timer");
-    const bar = document.getElementById("progressBar");
-    const stickersEl = document.getElementById("stickers");
-    const streakEl = document.getElementById("streakCount");
-    const startBtn = document.getElementById("startBtn");
-    const doneBtn = document.getElementById("doneBtn");
-    
-    let streak = localStorage.getItem("brushStreak") || 0;
-    streakEl.textContent = streak;
-    
-    function updateTimer() {
-      let minutes = Math.floor(timeLeft / 60);
-      let seconds = timeLeft % 60;
-      timerEl.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-      bar.style.width = `${((totalTime - timeLeft) / totalTime) * 100}%`;
+  <main class="app" id="app">
+    <div class="top">
+      <div class="lang" role="tablist">
+        <button class="pill active" id="arBtn" aria-selected="true">العربية</button>
+        <button class="pill" id="enBtn" aria-selected="false">English</button>
+      </div>
+      <div style="width:48px"></div><!-- spacer symmetrical -->
+    </div>
+
+    <div class="title">
+      <div style="font-size:22px">🦷</div>
+      <h1 id="t_title">لعبة تنظيف الأسنان</h1>
+      <div style="font-size:22px">🦷</div>
+    </div>
+    <p id="t_sub" class="sub">نظّف أسنانك لمدة دقيقتين لتصبح لامعة! ✨</p>
+
+    <div id="timer" class="timer">2:00</div>
+
+    <div class="teeth" id="teeth"></div>
+    <div class="bar-outer" aria-label="progress"><div id="bar" class="bar-inner"></div></div>
+
+    <div class="buttons">
+      <button id="start" class="b-go">▶︎ <span id="t_start">ابدأ</span></button>
+      <button id="pause" class="b-warn disabled">⏸ <span id="t_pause">إيقاف مؤقّت</span></button>
+      <button id="reset" class="b-soft disabled">↺ <span id="t_reset">إعادة</span></button>
+      <button id="done"  class="b-done disabled">✓ <span id="t_done">تم</span></button>
+    </div>
+
+    <div id="msg" class="msg"></div>
+    <div id="stickers" class="stickers"></div>
+    <div class="streak"><span id="t_streak">سِجل متتابع:</span> <span id="streak">0</span></div>
+
+    <details class="tips">
+      <summary id="t_tips_head">🪥 نصائح سريعة لتنظيف أفضل</summary>
+      <ul id="t_tips_list">
+        <li>قسّم الوقت بين اليمين واليسار، الأعلى والأسفل.</li>
+        <li>نظّف السطح الأمامي والخلفي وأطراف الأسنان.</li>
+        <li>لا تنسَ اللسان في آخر 10–15 ثانية!</li>
+      </ul>
+    </details>
+  </main>
+
+<script>
+  // ------- i18n -------
+  const I18N = {
+    ar: {
+      title:"لعبة تنظيف الأسنان",
+      sub:"نظّف أسنانك لمدة دقيقتين لتصبح لامعة! ✨",
+      start:"ابدأ", pause:"إيقاف مؤقّت", reset:"إعادة", done:"تم",
+      streak:"سِجل متتابع:", tipsHead:"🪥 نصائح سريعة لتنظيف أفضل",
+      tips:[
+        "قسّم الوقت بين اليمين واليسار، الأعلى والأسفل.",
+        "نظّف السطح الأمامي والخلفي وأطراف الأسنان.",
+        "لا تنسَ اللسان في آخر 10–15 ثانية!"
+      ],
+      msgGo:"هيا! استمر بالتفريش…",
+      msgPause:"تم الإيقاف مؤقتًا. اضغط ابدأ للمتابعة.",
+      msgFinish:"عمل رائع! اضغط «تم» لحفظ اليوم ✅"
+    },
+    en: {
+      title:"Toothbrushing Game",
+      sub:"Brush for 2 minutes to make your teeth sparkle! ✨",
+      start:"Start", pause:"Pause", reset:"Reset", done:"Done",
+      streak:"Streak:", tipsHead:"🪥 Quick tips for super clean teeth",
+      tips:[
+        "Split time across left/right, top/bottom.",
+        "Brush front, back and chewing surfaces.",
+        "Don’t forget the tongue in the last 10–15s!"
+      ],
+      msgGo:"Nice! Keep brushing…",
+      msgPause:"Paused. Tap Start to continue.",
+      msgFinish:"Great job! Tap Done to log today ✅"
     }
-    
-    function startTimer() {
-      startBtn.disabled = true;
-      doneBtn.disabled = true;
-      timeLeft = totalTime;
-      updateTimer();
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        updateTimer();
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          timerEl.textContent = "Done! 🎉";
-          doneBtn.disabled = false;
-          stickersEl.textContent = "🌟✨🦷";
-        }
-      }, 1000);
+  };
+
+  let lang = 'ar';
+  const $ = s => document.querySelector(s);
+  const els = {
+    title: $('#t_title'), sub: $('#t_sub'),
+    start: $('#t_start'), pause: $('#t_pause'), reset: $('#t_reset'), done: $('#t_done'),
+    streakLabel: $('#t_streak'), tipsHead: $('#t_tips_head'), tipsList: $('#t_tips_list'),
+    arBtn: $('#arBtn'), enBtn: $('#enBtn'), app: $('#app'),
+    timer: $('#timer'), bar: $('#bar'), teeth: $('#teeth'),
+    btnStart: $('#start'), btnPause: $('#pause'), btnReset: $('#reset'), btnDone: $('#done'),
+    msg: $('#msg'), stickers: $('#stickers'), streak: $('#streak')
+  };
+
+  function setLang(next){
+    lang = next;
+    const L = I18N[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang==='ar'?'rtl':'ltr');
+
+    els.title.textContent = L.title;
+    els.sub.textContent   = L.sub;
+    els.start.textContent = L.start;
+    els.pause.textContent = L.pause;
+    els.reset.textContent = L.reset;
+    els.done.textContent  = L.done;
+    els.streakLabel.textContent = L.streak;
+    els.tipsHead.textContent = L.tipsHead;
+    els.tipsList.innerHTML = L.tips.map(t=>`<li>${t}</li>`).join('');
+
+    // pills state
+    els.arBtn.classList.toggle('active', lang==='ar');
+    els.enBtn.classList.toggle('active', lang==='en');
+  }
+
+  // ------- Timer / Progress -------
+  const TOTAL = 120; // seconds
+  const SEGMENTS = 8; // teeth pieces
+  let left = TOTAL, tick=null, running=false, paused=false;
+
+  // streak
+  const get = k => localStorage.getItem(k);
+  const set = (k,v) => localStorage.setItem(k,v);
+  let streak = parseInt(get('brushStreak')||'0',10);
+  els.streak.textContent = String(streak);
+  const todayKey = new Date().toDateString();
+
+  // create teeth segments
+  const faces = ["😐","🙂","😊","😁"];
+  for(let i=0;i<SEGMENTS;i++){
+    const d = document.createElement('div');
+    d.className = 'tooth';
+    d.dataset.index = i;
+    d.textContent = faces[0];
+    els.teeth.appendChild(d);
+  }
+  const teethEls = [...document.querySelectorAll('.tooth')];
+
+  const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+
+  function updateUI(){
+    els.timer.textContent = fmt(left);
+    const pct = 100 * (1 - left / TOTAL);
+    els.bar.style.width = `${pct}%`;
+
+    const perSeg = TOTAL / SEGMENTS;
+    teethEls.forEach((t,i)=>{
+      const segProg = Math.min(Math.max((TOTAL-left) - i*perSeg, 0), perSeg) / perSeg;
+      if(segProg >= 1){ t.classList.add('done'); t.textContent = faces[3]; }
+      else if(segProg >= .66){ t.textContent = faces[2]; t.classList.add('done'); }
+      else if(segProg >= .33){ t.textContent = faces[1]; t.classList.remove('done'); }
+      else { t.textContent = faces[0]; t.classList.remove('done'); }
+    });
+
+    if(left<=0){
+      stop();
+      els.timer.textContent = (lang==='ar' ? "انتهى!" : "Done!");
+      els.msg.textContent = I18N[lang].msgFinish;
+      els.stickers.textContent = "🌟🫧🦷✨";
+      enable({start:true,pause:false,reset:true,done:true});
     }
-    
-    function completeBrushing() {
-      let today = new Date().toDateString();
-      if (localStorage.getItem("lastBrush") !== today) {
-        streak++;
-        localStorage.setItem("brushStreak", streak);
-        localStorage.setItem("lastBrush", today);
-      }
-      streakEl.textContent = streak;
-      alert("Great job! Streak updated.");
-      startBtn.disabled = false;
-      doneBtn.disabled = true;
+  }
+
+  function enable(map){
+    [['btnStart','start'],['btnPause','pause'],['btnReset','reset'],['btnDone','done']].forEach(([k,n])=>{
+      els[k].classList.toggle('disabled', !map[n]);
+    });
+  }
+
+  function start(){
+    if(running && !paused) return;
+    running = true; paused = false;
+    els.msg.textContent = I18N[lang].msgGo;
+    enable({start:false,pause:true,reset:true,done:false});
+    tick = setInterval(()=>{ left--; updateUI(); }, 1000);
+  }
+  function pause(){
+    if(!running || paused) return;
+    paused = true; clearInterval(tick);
+    els.msg.textContent = I18N[lang].msgPause;
+    enable({start:true,pause:false,reset:true,done:false});
+  }
+  function reset(){
+    clearInterval(tick); running=false; paused=false; left = TOTAL;
+    els.stickers.textContent = ''; els.msg.textContent='';
+    enable({start:true,pause:false,reset:false,done:false});
+    updateUI();
+  }
+  function done(){
+    if(get('lastBrush') !== todayKey){
+      streak += 1; set('brushStreak', String(streak)); set('lastBrush', todayKey);
+      els.streak.textContent = String(streak);
     }
-    
-    startBtn.addEventListener("click", startTimer);
-    doneBtn.addEventListener("click", completeBrushing);
-  </script>
+    reset();
+  }
+  function stop(){ clearInterval(tick); running=false; paused=false; }
+
+  // init
+  setLang('ar');
+  updateUI();
+  enable({start:true,pause:false,reset:false,done:false});
+
+  // events
+  els.btnStart.addEventListener('click', ()=> paused ? start() : start());
+  els.btnPause.addEventListener('click', pause);
+  els.btnReset.addEventListener('click', reset);
+  els.btnDone .addEventListener('click', done);
+
+  // language toggle
+  els.arBtn.addEventListener('click', ()=> setLang('ar'));
+  els.enBtn.addEventListener('click', ()=> setLang('en'));
+</script>
 </body>
 </html>
